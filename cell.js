@@ -11,20 +11,23 @@ class Cell {
         this.flagged = false;
     }
 
-    show() { //Draws the cell for the mine
-        if (!this.clicked) { //Normal Cell
+    /**
+     * Determines the cell's appearance and renders it.
+     */
+    show() {
+        if (!this.clicked) {
             rect(this.x, this.y, this.step, this.step);
             if (this.flagged) {
                 image(flag, this.x, this.y, this.step, this.step);
             }
         } else if (!this.isMine) {
             if (this.neighbours === 0) {
-                for (var xOff = -1; xOff <= 1; xOff++) {
-                    var i = this.cols + xOff;
+                for (let xOff = -1; xOff <= 1; xOff++) {
+                    let i = this.cols + xOff;
                     if (i < 0 || i >= cols) continue;
 
-                    for (var yOff = -1; yOff <= 1; yOff++) {
-                        var j = this.rows + yOff;
+                    for (let yOff = -1; yOff <= 1; yOff++) {
+                        let j = this.rows + yOff;
                         if (j < 0 || j >= rows) continue;
 
                         grid[i][j].clicked = true;
@@ -47,21 +50,23 @@ class Cell {
         }
     }
 
-    setNumber() { //Sets the number for each cell
+    /**
+     * Counts the number of neighbours which are mines.
+     */
+    setNumber() {
         if (this.isMine) {
             this.neighbours = -1;
             return;
         }
-        var total = 0;
-        for (var xOff = -1; xOff <= 1; xOff++) {
-            var i = this.cols + xOff;
+        let total = 0;
+        for (let xOff = -1; xOff <= 1; xOff++) {
+            let i = this.cols + xOff;
             if (i < 0 || i >= cols) continue;
 
-            for (var yOff = -1; yOff <= 1; yOff++) {
-                var j = this.rows + yOff;
+            for (let yOff = -1; yOff <= 1; yOff++) {
+                let j = this.rows + yOff;
                 if (j < 0 || j >= rows) continue;
-
-                //var neighbour = grid[i][j];
+                //let neighbour = grid[i][j];
                 if (grid[i][j].isMine) {
                     total++;
                 }
@@ -70,14 +75,19 @@ class Cell {
         this.neighbours = total;
     }
 
+    /**
+     * Triggered when the player left-clicks on this cell.
+     */
     mousePressed() {
         if (mouseX > this.x && mouseX < this.x + this.step) {
             if (mouseY > this.y && mouseY < this.y + this.step) {
-                this.clicked = true;
-                if (this.isMine) {
-                    for (var i = 0; i < cols; i++) {
-                        for (var j = 0; j < rows; j++) {
-                            grid[i][j].clicked = true;
+                if (!this.flagged) {
+                    this.clicked = true;
+                    if (this.isMine) {
+                        for (let i = 0; i < cols; i++) {
+                            for (let j = 0; j < rows; j++) {
+                                grid[i][j].clicked = true;
+                            }
                         }
                     }
                 }
@@ -85,11 +95,13 @@ class Cell {
         }
     }
 
+    /**
+     * Triggered when the player right-clicks on this cell.
+     */
     flag() {
         if (mouseX > this.x && mouseX < this.x + this.step) {
             if (mouseY > this.y && mouseY < this.y + this.step) {
-                this.flagged = true;
-               
+                this.flagged = !this.flagged;
             }
         }
     }
