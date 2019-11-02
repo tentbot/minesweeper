@@ -15,6 +15,11 @@ class Cell {
      * Determines the cell's appearance and renders it.
      */
     show() {
+        push();
+        strokeWeight(2);
+        fill(235);
+        rect(this.x, this.y, this.step, this.step);
+        pop();
         if (!this.clicked) {
             rect(this.x, this.y, this.step, this.step);
             if (this.flagged) {
@@ -38,11 +43,13 @@ class Cell {
                     }
                 }
             }
-            fill(0, 0, 255);
-            textSize(20);
-            textAlign("center");
-            text(this.neighbours, this.x + this.step / 2, this.y + this.step / 1.35);
-            fill(255);
+            if (this.neighbours !== 0) {
+                fill(0, 0, 255);
+                textSize(20);
+                textAlign("center");
+                text(this.neighbours, this.x + this.step / 2, this.y + this.step / 1.35);
+                fill(255);
+            }
         } else if (this.isMine) {
             fill(0);
             ellipse(this.x + 15, this.y + 15, this.step / 2);

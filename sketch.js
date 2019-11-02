@@ -4,7 +4,7 @@ let rows;
 let flag;
 let gameOver = false;
 const step = 30;
-const difficulty = 1.2;
+const difficulty = 1.15;
 
 function preload() {
     flag = loadImage("Flag.png");
