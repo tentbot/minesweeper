@@ -11,55 +11,38 @@ class Cell {
         this.flagged = false;
     }
 
-    /**
-     * Determines the cell's appearance and renders it.
-     */
+    /* Determines the cell's appearance and renders it. */
     show() {
-        push();
-        strokeWeight(2);
-        fill(235);
-        rect(this.x, this.y, this.step, this.step);
-        pop();
+        let m, n;
         if (!this.clicked) {
-            rect(this.x, this.y, this.step, this.step);
-            if (this.flagged) {
-                image(flag, this.x, this.y, this.step, this.step);
-            }
+            n = 0;
+            m = this.flagged ? 1 : 0;
         } else if (!this.isMine) {
+            n = 1;
+            m = this.neighbours;
             if (this.neighbours === 0) {
                 for (let xOff = -1; xOff <= 1; xOff++) {
                     let i = this.cols + xOff;
-                    if (i < 0 || i >= cols) continue;
+                    if (i < 0 || i >= cols)
+                        continue;
 
                     for (let yOff = -1; yOff <= 1; yOff++) {
                         let j = this.rows + yOff;
-                        if (j < 0 || j >= rows) continue;
+                        if (j < 0 || j >= rows)
+                            continue;
 
                         grid[i][j].clicked = true;
-
-                        if (grid[i][j].neighbours === 0) {
-                            grid[i][j].clicked = true;
-                        }
                     }
                 }
             }
-            if (this.neighbours !== 0) {
-                fill(0, 0, 255);
-                textSize(20);
-                textAlign("center");
-                text(this.neighbours, this.x + this.step / 2, this.y + this.step / 1.35);
-                fill(255);
-            }
-        } else if (this.isMine) {
-            fill(0);
-            ellipse(this.x + 15, this.y + 15, this.step / 2);
-            fill(255);
+        } else {
+            n = 2;
+            m = 0;
         }
+        image(sprites, RESOLUTION*n, RESOLUTION*m, RESOLUTION, RESOLUTION, this.x, this.y, this.step, this.step);
     }
 
-    /**
-     * Counts the number of neighbours which are mines.
-     */
+    /* Counts the number of neighbours which are mines. */
     setNumber() {
         if (this.isMine) {
             this.neighbours = -1;
@@ -68,12 +51,13 @@ class Cell {
         let total = 0;
         for (let xOff = -1; xOff <= 1; xOff++) {
             let i = this.cols + xOff;
-            if (i < 0 || i >= cols) continue;
+            if (i < 0 || i >= cols)
+                continue;
 
             for (let yOff = -1; yOff <= 1; yOff++) {
                 let j = this.rows + yOff;
-                if (j < 0 || j >= rows) continue;
-                //let neighbour = grid[i][j];
+                if (j < 0 || j >= rows)
+                    continue;
                 if (grid[i][j].isMine) {
                     total++;
                 }
@@ -82,29 +66,21 @@ class Cell {
         this.neighbours = total;
     }
 
-    /**
-     * Triggered when the player left-clicks on this cell.
-     */
-    mousePressed() {
+    /* Triggered when the player left-clicks on this cell. */
+    click() {
         if (mouseX > this.x && mouseX < this.x + this.step) {
             if (mouseY > this.y && mouseY < this.y + this.step) {
                 if (!this.flagged) {
                     this.clicked = true;
                     if (this.isMine) {
-                        for (let i = 0; i < cols; i++) {
-                            for (let j = 0; j < rows; j++) {
-                                grid[i][j].clicked = true;
-                            }
-                        }
+                        gameOver = true;
                     }
                 }
             }
         }
     }
 
-    /**
-     * Triggered when the player right-clicks on this cell.
-     */
+    /* Triggered when the player right-clicks on this cell. */
     flag() {
         if (mouseX > this.x && mouseX < this.x + this.step) {
             if (mouseY > this.y && mouseY < this.y + this.step) {
